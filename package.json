@@ -1,0 +1,21 @@
+{
+  "name": "google-flow-automation",
+  "version": "1.0.0",
+  "description": "Playwright automation tool for Google Flow video generation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "interactive": "node index.js --interactive",
+    "help": "node index.js --help",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["playwright", "automation", "google-flow", "video-generation", "ai"],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@playwright/test": "^1.58.2",
+    "dotenv": "^17.2.4",
+    "playwright": "^1.58.2"
+  }
+}
