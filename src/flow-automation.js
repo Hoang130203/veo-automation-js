@@ -237,6 +237,75 @@ class FlowAutomation {
                 }
             }
 
+            // Step 2: Find and click on the text area, then enter prompt
+            console.log('🔍 Step 2: Looking for the prompt text area...');
+            await this.page.waitForTimeout(2000);
+
+            const textAreaSelectors = [
+                '#PINHOLE_TEXT_AREA_ELEMENT_ID',
+                '[id*="PINHOLE_TEXT_AREA"]',
+                'textarea',
+                '[contenteditable="true"]',
+            ];
+
+            let textAreaFound = false;
+            for (const sel of textAreaSelectors) {
+                try {
+                    const textArea = await this.page.$(sel);
+                    if (textArea) {
+                        console.log(`✅ Found text area with: ${sel}`);
+                        await textArea.click();
+                        await this.page.waitForTimeout(500);
+
+                        // Enter the prompt
+                        const videoPrompt = config.video.prompt;
+                        console.log(`📝 Step 3: Entering prompt: "${videoPrompt.substring(0, 50)}..."`);
+                        await textArea.fill(videoPrompt);
+                        console.log('✅ Prompt entered!');
+                        textAreaFound = true;
+                        break;
+                    }
+                } catch (e) { }
+            }
+
+            if (!textAreaFound) {
+                console.log('⚠️ Text area not found');
+            }
+
+            await this.page.waitForTimeout(1000);
+
+            // Step 4: Click the generate button
+            console.log('🔍 Step 4: Looking for the generate button...');
+            const generateButtonSelector = '.sc-c177465c-1.gdArnN.sc-408537d4-2.gdXWm';
+
+            try {
+                await this.page.waitForSelector(generateButtonSelector, { timeout: 10000 });
+                console.log('✅ Found generate button! Clicking...');
+                await this.page.click(generateButtonSelector);
+                console.log('🎬 Generate button clicked! Video generation started!');
+            } catch (e) {
+                console.log('⚠️ Generate button not found with exact class, trying alternatives...');
+                const genAlternatives = [
+                    'button.gdArnN',
+                    '[class*="sc-408537d4-2"]',
+                    'button:has-text("Generate")',
+                    'button:has-text("Tạo")',
+                ];
+
+                for (const sel of genAlternatives) {
+                    try {
+                        const btn = await this.page.$(sel);
+                        if (btn) {
+                            console.log(`✅ Found generate button with: ${sel}`);
+                            await btn.click();
+                            console.log('🎬 Generate button clicked!');
+                            break;
+                        }
+                    } catch (e2) { }
+                }
+            }
+
+            console.log('');
             console.log('🎮 Interactive mode - Browser is open for manual use');
             console.log('💡 You can now interact with the browser manually');
             console.log('⏹️ Press Ctrl+C to exit');
